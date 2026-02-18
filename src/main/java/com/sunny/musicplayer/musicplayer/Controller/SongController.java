@@ -31,6 +31,10 @@ public class SongController {
         Song savedSong = songService.addSong(song);
         return ResponseEntity.ok(savedSong);
     }
+    @GetMapping
+    public List<Song> getSongs() {
+        return songService.getAllSongs();
+    }
 
     @GetMapping("/play/{id}")
     public ResponseEntity<Resource> playSong(@PathVariable Long id) throws IOException {
@@ -53,5 +57,10 @@ public class SongController {
                 .contentType(MediaType.parseMediaType("audio/mpeg"))
                 .body(resource);
     }
+    @PutMapping("/{id}")
+    public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
+        return songService.updateSong(id, song);
+    }
+
 }
 
