@@ -1,25 +1,37 @@
 package com.sunny.musicplayer.musicplayer.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "song")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@ToString(exclude = "likedByUsers")
+@EqualsAndHashCode(exclude = "likedByUsers")
 public class Song {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
     private String artist;
+
     private String album;
+
+    @Column(name = "file_path")
     private String filePath;
+
+    @JsonBackReference
+    @ManyToMany(mappedBy = "likedSongs", fetch = FetchType.LAZY)
+    private Set<User> likedByUsers = new HashSet<>();
 }

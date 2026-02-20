@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitStream | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+
+        :root {
+            --accent: #1db954;
+            --bg-black: #000000;
+            --bg-dark: #121212;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-black);
+            color: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        /* Spotify-style background glow */
+        .ambient-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50vw; height: 50vh;
+            background: radial-gradient(circle, rgba(29, 185, 84, 0.1) 0%, transparent 70%);
+            z-index: 0;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        .auth-card {
+            background-color: var(--bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .input-field {
+            background-color: #242424;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent);
+            background-color: #2a2a2a;
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            background-color: #1ed760;
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+
+<div class="auth-card p-10 rounded-2xl shadow-2xl">
+    <div class="flex flex-col items-center mb-10">
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="waves" class="text-[#1db954] w-12 h-12"></i>
+            <span class="text-3xl font-bold tracking-tighter">BitStream</span>
+        </div>
+        <h2 class="text-xl font-bold mt-4">Log in to BitStream</h2>
+    </div>
+
+    <div class="space-y-6">
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider mb-2">Email address</label>
+            <input type="email" id="email" placeholder="Email address"
+                   class="input-field w-full p-3 rounded-md text-sm placeholder:text-gray-500">
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider mb-2">Password</label>
+            <input type="password" id="password" placeholder="Password"
+                   class="input-field w-full p-3 rounded-md text-sm placeholder:text-gray-500">
+        </div>
+
+        <button onclick="login()"
+                class="btn-primary w-full text-black font-bold py-3 rounded-full mt-2 uppercase tracking-widest text-sm">
+            Log In
+        </button>
+    </div>
+
+    <p id="msg" class="mt-6 text-center text-sm font-medium min-h-[20px]"></p>
+
+    <div class="mt-8 pt-6 border-t border-white/10 text-center">
+        <p class="text-[#b3b3b3] text-sm">
+            Don't have an account?
+            <a href="/register.html" class="text-white hover:text-[#1db954] underline font-bold ml-1">Sign up for BitStream</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    async function login() {
+        const msg = document.getElementById("msg");
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        if (!email || !password) {
+            msg.innerText = "Please enter your credentials";
+            msg.className = "mt-6 text-center text-sm text-yellow-500";
+            return;
+        }
+
+        msg.innerText = "Verifying...";
+        msg.className = "mt-6 text-center text-sm text-[#1db954]";
+
+        try {
+            const response = await fetch("/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+
+                // Save session data
+                localStorage.setItem("userId", user.id);
+                localStorage.setItem("userName", user.name);
+
+                msg.innerText = "Login Successful! Redirecting...";
+                msg.className = "mt-6 text-center text-sm text-[#1db954]";
+
+                setTimeout(() => {
+                    window.location.href = "/index.html";
+                }, 1000);
+            } else {
+                msg.innerText = "Invalid email or password ";
+                msg.className = "mt-6 text-center text-sm text-red-500";
+            }
+        } catch (error) {
+            msg.innerText = "Connection error. Please try again.";
+            msg.className = "mt-6 text-center text-sm text-red-500";
+        }
+    }
+</script>
+
+</body>
+</html>

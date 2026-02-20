@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitStream</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+
+        :root {
+            --accent: #1db954;
+            --bg-black: #000000;
+            --bg-dark: #121212;
+            --text-gray: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-black);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw; height: 60vh;
+            background: radial-gradient(circle, rgba(29, 185, 84, 0.08) 0%, transparent 70%);
+            z-index: 0;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        .sidebar { background-color: var(--bg-black); }
+        .main-content { background: linear-gradient(to bottom, #121212, #000000); }
+
+        .song-row:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .active-row { color: var(--accent) !important; }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 4px;
+            background: #4d4d4d;
+            border-radius: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px; height: 12px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+        }
+
+        .progress-container:hover input[type="range"]::-webkit-slider-thumb {
+            display: block;
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+<div class="ambient-glow"></div>
+
+<div class="flex flex-1 overflow-hidden z-10">
+    <aside class="w-60 sidebar p-6 flex flex-col gap-6">
+        <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="waves" class="text-[#1db954] w-8 h-8"></i>
+            <span class="text-2xl font-bold tracking-tight text-[#1db954]">BitStream</span>
+        </div>
+
+        <nav class="space-y-4">
+            <div class="flex items-center gap-4 text-white font-bold cursor-pointer"><i data-lucide="home"></i> Home</div>
+            <div class="flex items-center gap-4 text-[#b3b3b3] hover:text-white font-bold cursor-pointer transition-colors"><i data-lucide="search"></i> Search</div>
+            <div class="flex items-center gap-4 text-[#b3b3b3] hover:text-white font-bold cursor-pointer transition-colors"><i data-lucide="library"></i> Library</div>
+        </nav>
+
+        <div class="mt-8 pt-8 border-t border-white/10">
+            <button onclick="logout()" class="flex items-center gap-4 text-red-500 hover:text-red-400 font-bold transition-colors">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 main-content overflow-y-auto p-8 relative">
+        <header class="flex justify-between items-center mb-12">
+            <div class="flex gap-4">
+                <button class="w-8 h-8 bg-black rounded-full flex items-center justify-center text-gray-400 hover:text-white"><i data-lucide="chevron-left"></i></button>
+                <button class="w-8 h-8 bg-black rounded-full flex items-center justify-center text-gray-400 hover:text-white"><i data-lucide="chevron-right"></i></button>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2 px-3 py-1 bg-black/40 rounded-full border border-white/10">
+                    <i data-lucide="user" class="w-4 h-4 text-[#1db954]"></i>
+                    <span id="display-user-name" class="text-sm font-bold text-white uppercase tracking-wider">User</span>
+                </div>
+
+                <button onclick="loadSongs()" class="bg-white text-black px-8 py-2 rounded-full font-bold hover:scale-105 transition-transform">
+                    Sync Library
+                </button>
+            </div>
+        </header>
+
+        <h1 class="text-3xl font-bold mb-8">Recently Streamed</h1>
+
+        <table class="w-full text-left">
+            <thead>
+            <tr class="text-[#b3b3b3] text-[11px] uppercase tracking-widest border-b border-white/5">
+                <th class="pb-3 w-12 pl-4">#</th>
+                <th class="pb-3">Title</th>
+                <th class="pb-3">Artist</th>
+                <th class="pb-3 text-right pr-4"><i data-lucide="clock" class="w-4 h-4 ml-auto"></i></th>
+            </tr>
+            </thead>
+            <tbody id="songs-list" class="text-sm font-medium">
+            </tbody>
+        </table>
+    </main>
+</div>
+
+<footer class="h-24 bg-black border-t border-white/5 px-4 flex items-center justify-between z-20">
+    <div class="flex items-center gap-4 w-[30%]">
+        <div class="w-14 h-14 bg-[#282828] rounded flex items-center justify-center text-gray-500">
+            <i data-lucide="music" class="w-6 h-6"></i>
+        </div>
+        <div class="truncate">
+            <div id="p-title" class="text-sm font-bold truncate">Standby</div>
+            <div id="p-artist" class="text-[11px] text-[#b3b3b3] truncate">BitStream Node</div>
+        </div>
+        <i data-lucide="heart" class="w-4 h-4 text-[#b3b3b3] hover:text-[#1db954] cursor-pointer ml-2"></i>
+    </div>
+
+    <div class="flex flex-col items-center gap-2 w-[40%]">
+        <div class="flex items-center gap-6">
+            <i data-lucide="shuffle" id="shuffleBtn" onclick="toggleShuffle()" class="w-4 h-4 text-[#b3b3b3] hover:text-white cursor-pointer"></i>
+            <i data-lucide="skip-back" onclick="playPrev()" class="w-5 h-5 text-gray-300 hover:text-white fill-current cursor-pointer"></i>
+            <button onclick="togglePlay()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform">
+                <i data-lucide="play" id="playIcon" class="fill-current ml-1"></i>
+            </button>
+            <i data-lucide="skip-forward" onclick="playNext()" class="w-5 h-5 text-gray-300 hover:text-white fill-current cursor-pointer"></i>
+            <i data-lucide="repeat" id="loopBtn" onclick="toggleLoop()" class="w-4 h-4 text-[#b3b3b3] hover:text-white cursor-pointer"></i>
+        </div>
+        <div class="flex items-center gap-2 w-full progress-container">
+            <span id="time-curr" class="text-[11px] text-[#b3b3b3] w-10 text-right">0:00</span>
+            <input type="range" id="progress" value="0" class="flex-1 accent-[#1db954]">
+            <span id="time-total" class="text-[11px] text-[#b3b3b3] w-10">0:00</span>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-3 w-[30%]">
+        <i data-lucide="volume-2" class="w-4 h-4 text-[#b3b3b3]"></i>
+        <input type="range" id="volume" value="80" class="w-24 accent-[#1db954]" oninput="audio.volume = this.value/100">
+    </div>
+</footer>
+
+<audio id="audio-engine"></audio>
+
+<script>
+    window.onload = () => {
+        const userId = localStorage.getItem("userId");
+        const userName = localStorage.getItem("userName");
+
+        if (!userId) {
+            window.location.href = "/login.html";
+        } else {
+            if(userName) {
+                document.getElementById("display-user-name").innerText = userName;
+            }
+            loadSongs();
+        }
+    };
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/login.html";
+    }
+
+    lucide.createIcons();
+    const audio = document.getElementById('audio-engine');
+    let currentSongs = [];
+    let currentIndex = -1;
+    let isShuffle = false;
+    let isLoop = false;
+
+    async function loadSongs() {
+        try {
+            const res = await fetch('/songs');
+            currentSongs = await res.json();
+            renderList();
+        } catch (e) {
+            console.error("Sync Error", e);
+        }
+    }
+
+    function renderList() {
+        const list = document.getElementById('songs-list');
+        list.innerHTML = currentSongs.map((song, i) => `
+                <tr class="song-row group cursor-pointer transition-colors ${currentIndex === i ? 'active-row' : ''}" onclick="playByIndex(${i})">
+                    <td class="py-3 pl-4 text-[#b3b3b3] font-mono text-xs">${i + 1}</td>
+                    <td class="py-3 font-bold ${currentIndex === i ? 'text-[#1db954]' : 'text-white'} group-hover:text-[#1db954]">${song.title}</td>
+                    <td class="py-3 text-[#b3b3b3] text-xs">${song.artist || 'Unknown Artist'}</td>
+                    <td class="py-3 text-right pr-4 text-[#b3b3b3] text-xs">3:45</td>
+                </tr>
+            `).join('');
+    }
+
+    function playByIndex(index) {
+        currentIndex = index;
+        const song = currentSongs[index];
+        audio.src = `/songs/play/${song.id}`;
+        audio.play();
+        document.getElementById('p-title').innerText = song.title;
+        document.getElementById('p-artist').innerText = song.artist || "Unknown Artist";
+        updatePlayIcon(true);
+        renderList();
+    }
+
+    function togglePlay() {
+        if (!audio.src) return;
+        audio.paused ? audio.play() : audio.pause();
+        updatePlayIcon(!audio.paused);
+    }
+
+    function updatePlayIcon(isPlaying) {
+        const icon = document.getElementById('playIcon');
+        icon.setAttribute('data-lucide', isPlaying ? 'pause' : 'play');
+        lucide.createIcons();
+    }
+
+    function playNext() {
+        if(currentSongs.length === 0) return;
+        let next = isShuffle ? Math.floor(Math.random() * currentSongs.length) : (currentIndex + 1) % currentSongs.length;
+        playByIndex(next);
+    }
+
+    function playPrev() {
+        if(currentSongs.length === 0) return;
+        let prev = (currentIndex - 1 + currentSongs.length) % currentSongs.length;
+        playByIndex(prev);
+    }
+
+    function toggleShuffle() {
+        isShuffle = !isShuffle;
+        document.getElementById('shuffleBtn').classList.toggle('text-[#1db954]', isShuffle);
+    }
+
+    function toggleLoop() {
+        isLoop = !isLoop;
+        audio.loop = isLoop;
+        document.getElementById('loopBtn').classList.toggle('text-[#1db954]', isLoop);
+    }
+
+    audio.addEventListener("loadedmetadata", () => {
+        document.getElementById("time-total").innerText = formatTime(audio.duration);
+    });
+
+    audio.addEventListener("timeupdate", () => {
+        if (!audio.duration) return;
+        const prog = (audio.currentTime / audio.duration) * 100;
+        document.getElementById("progress").value = prog;
+        document.getElementById("time-curr").innerText = formatTime(audio.currentTime);
+    });
+
+    document.getElementById('progress').oninput = (e) => {
+        audio.currentTime = (e.target.value * audio.duration) / 100;
+    };
+
+    function formatTime(sec) {
+        if (!sec) return "0:00";
+        let m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+</script>
+</body>
+</html>
