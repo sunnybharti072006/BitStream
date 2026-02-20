@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BitStream</title>
+    <title>BitStream </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -60,6 +60,9 @@
         .progress-container:hover input[type="range"]::-webkit-slider-thumb {
             display: block;
         }
+
+        /* Search input styling */
+        #search-input::placeholder { color: #727272; }
     </style>
 </head>
 <body class="flex flex-col">
@@ -74,9 +77,15 @@
         </div>
 
         <nav class="space-y-4">
-            <div class="flex items-center gap-4 text-white font-bold cursor-pointer"><i data-lucide="home"></i> Home</div>
-            <div class="flex items-center gap-4 text-[#b3b3b3] hover:text-white font-bold cursor-pointer transition-colors"><i data-lucide="search"></i> Search</div>
-            <div class="flex items-center gap-4 text-[#b3b3b3] hover:text-white font-bold cursor-pointer transition-colors"><i data-lucide="library"></i> Library</div>
+            <div onclick="loadSongs()" class="flex items-center gap-4 text-white font-bold cursor-pointer hover:text-[#1db954] transition-colors">
+                <i data-lucide="home"></i> Home
+            </div>
+            <div onclick="document.getElementById('search-input').focus()" class="flex items-center gap-4 text-[#b3b3b3] hover:text-white font-bold cursor-pointer transition-colors">
+                <i data-lucide="search"></i> Search
+            </div>
+            <div class="flex items-center gap-4 text-[#b3b3b3] hover:text-white font-bold cursor-pointer transition-colors">
+                <i data-lucide="library"></i> Library
+            </div>
         </nav>
 
         <div class="mt-8 pt-8 border-t border-white/10">
@@ -88,25 +97,32 @@
     </aside>
 
     <main class="flex-1 main-content overflow-y-auto p-8 relative">
-        <header class="flex justify-between items-center mb-12">
-            <div class="flex gap-4">
-                <button class="w-8 h-8 bg-black rounded-full flex items-center justify-center text-gray-400 hover:text-white"><i data-lucide="chevron-left"></i></button>
-                <button class="w-8 h-8 bg-black rounded-full flex items-center justify-center text-gray-400 hover:text-white"><i data-lucide="chevron-right"></i></button>
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-4 flex-1">
+                <div class="relative w-full max-w-md group">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#1db954] transition-colors"></i>
+                    <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Search for songs, artists, or albums..."
+                            class="w-full bg-[#242424] border-none rounded-full py-3 pl-12 pr-4 text-sm text-white focus:ring-2 focus:ring-white outline-none transition-all"
+                            oninput="debounceSearch(event)"
+                    >
+                </div>
             </div>
 
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-6 ml-4">
                 <div class="flex items-center gap-2 px-3 py-1 bg-black/40 rounded-full border border-white/10">
                     <i data-lucide="user" class="w-4 h-4 text-[#1db954]"></i>
                     <span id="display-user-name" class="text-sm font-bold text-white uppercase tracking-wider">User</span>
                 </div>
-
-                <button onclick="loadSongs()" class="bg-white text-black px-8 py-2 rounded-full font-bold hover:scale-105 transition-transform">
+                <button onclick="loadSongs()" class="bg-white text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform">
                     Sync Library
                 </button>
             </div>
         </header>
 
-        <h1 class="text-3xl font-bold mb-8">Recently Streamed</h1>
+        <h1 id="list-title" class="text-3xl font-bold mb-8">Recently Streamed</h1>
 
         <table class="w-full text-left">
             <thead>
@@ -120,13 +136,18 @@
             <tbody id="songs-list" class="text-sm font-medium">
             </tbody>
         </table>
+
+        <div id="no-results" class="hidden text-center py-20 text-gray-500">
+            <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-4 opacity-20"></i>
+            <p>No songs found for your search.</p>
+        </div>
     </main>
 </div>
 
 <footer class="h-24 bg-black border-t border-white/5 px-4 flex items-center justify-between z-20">
     <div class="flex items-center gap-4 w-[30%]">
-        <div class="w-14 h-14 bg-[#282828] rounded flex items-center justify-center text-gray-500">
-            <i data-lucide="music" class="w-6 h-6"></i>
+        <div class="w-14 h-14 bg-[#282828] rounded flex items-center justify-center text-gray-500 overflow-hidden">
+            <i data-lucide="music" id="current-art-icon" class="w-6 h-6"></i>
         </div>
         <div class="truncate">
             <div id="p-title" class="text-sm font-bold truncate">Standby</div>
@@ -147,7 +168,7 @@
         </div>
         <div class="flex items-center gap-2 w-full progress-container">
             <span id="time-curr" class="text-[11px] text-[#b3b3b3] w-10 text-right">0:00</span>
-            <input type="range" id="progress" value="0" class="flex-1 accent-[#1db954]">
+            <input type="range" id="progress" value="0" step="0.1" class="flex-1 accent-[#1db954]">
             <span id="time-total" class="text-[11px] text-[#b3b3b3] w-10">0:00</span>
         </div>
     </div>
@@ -161,6 +182,13 @@
 <audio id="audio-engine"></audio>
 
 <script>
+    const audio = document.getElementById('audio-engine');
+    let currentSongs = [];
+    let currentIndex = -1;
+    let isShuffle = false;
+    let isLoop = false;
+    let searchTimeout = null;
+
     window.onload = () => {
         const userId = localStorage.getItem("userId");
         const userName = localStorage.getItem("userName");
@@ -173,6 +201,7 @@
             }
             loadSongs();
         }
+        lucide.createIcons();
     };
 
     function logout() {
@@ -180,12 +209,34 @@
         window.location.href = "/login.html";
     }
 
-    lucide.createIcons();
-    const audio = document.getElementById('audio-engine');
-    let currentSongs = [];
-    let currentIndex = -1;
-    let isShuffle = false;
-    let isLoop = false;
+    // --- SEARCH LOGIC ---
+    function debounceSearch(event) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(event.target.value);
+        }, 300); // 300ms delay to wait for user to finish typing
+    }
+
+    async function performSearch(query) {
+        const listTitle = document.getElementById('list-title');
+
+        if (!query.trim()) {
+            listTitle.innerText = "Recently Streamed";
+            loadSongs();
+            return;
+        }
+
+        try {
+            const res = await fetch(`/songs/search?query=${encodeURIComponent(query)}`);
+            if (res.ok) {
+                currentSongs = await res.json();
+                listTitle.innerText = `Search results for "${query}"`;
+                renderList();
+            }
+        } catch (e) {
+            console.error("Search Error", e);
+        }
+    }
 
     async function loadSongs() {
         try {
@@ -199,6 +250,15 @@
 
     function renderList() {
         const list = document.getElementById('songs-list');
+        const noResults = document.getElementById('no-results');
+
+        if (currentSongs.length === 0) {
+            list.innerHTML = "";
+            noResults.classList.remove('hidden');
+            return;
+        }
+
+        noResults.classList.add('hidden');
         list.innerHTML = currentSongs.map((song, i) => `
                 <tr class="song-row group cursor-pointer transition-colors ${currentIndex === i ? 'active-row' : ''}" onclick="playByIndex(${i})">
                     <td class="py-3 pl-4 text-[#b3b3b3] font-mono text-xs">${i + 1}</td>
@@ -207,28 +267,39 @@
                     <td class="py-3 text-right pr-4 text-[#b3b3b3] text-xs">3:45</td>
                 </tr>
             `).join('');
+        lucide.createIcons();
     }
 
+    // --- PLAYER CONTROLS ---
     function playByIndex(index) {
+        if(index < 0 || index >= currentSongs.length) return;
+
         currentIndex = index;
         const song = currentSongs[index];
         audio.src = `/songs/play/${song.id}`;
         audio.play();
+
         document.getElementById('p-title').innerText = song.title;
         document.getElementById('p-artist').innerText = song.artist || "Unknown Artist";
+
         updatePlayIcon(true);
         renderList();
     }
 
     function togglePlay() {
         if (!audio.src) return;
-        audio.paused ? audio.play() : audio.pause();
-        updatePlayIcon(!audio.paused);
+        if (audio.paused) {
+            audio.play();
+            updatePlayIcon(true);
+        } else {
+            audio.pause();
+            updatePlayIcon(false);
+        }
     }
 
     function updatePlayIcon(isPlaying) {
-        const icon = document.getElementById('playIcon');
-        icon.setAttribute('data-lucide', isPlaying ? 'pause' : 'play');
+        const playIcon = document.getElementById('playIcon');
+        playIcon.setAttribute('data-lucide', isPlaying ? 'pause' : 'play');
         lucide.createIcons();
     }
 
@@ -255,6 +326,7 @@
         document.getElementById('loopBtn').classList.toggle('text-[#1db954]', isLoop);
     }
 
+    // --- AUDIO EVENT LISTENERS ---
     audio.addEventListener("loadedmetadata", () => {
         document.getElementById("time-total").innerText = formatTime(audio.duration);
     });
@@ -266,12 +338,18 @@
         document.getElementById("time-curr").innerText = formatTime(audio.currentTime);
     });
 
+    audio.addEventListener("ended", () => {
+        if (!isLoop) playNext();
+    });
+
     document.getElementById('progress').oninput = (e) => {
-        audio.currentTime = (e.target.value * audio.duration) / 100;
+        if (audio.duration) {
+            audio.currentTime = (e.target.value * audio.duration) / 100;
+        }
     };
 
     function formatTime(sec) {
-        if (!sec) return "0:00";
+        if (!sec || isNaN(sec)) return "0:00";
         let m = Math.floor(sec / 60), s = Math.floor(sec % 60);
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     }

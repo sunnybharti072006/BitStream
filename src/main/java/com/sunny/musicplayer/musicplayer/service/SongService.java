@@ -9,4 +9,5 @@ public interface SongService {
     Song getSongById(Long id);
     Song saveSong(Song song);
     Song updateSong(Long id, Song song);
+    List<Song> searchSong(String query);
 }

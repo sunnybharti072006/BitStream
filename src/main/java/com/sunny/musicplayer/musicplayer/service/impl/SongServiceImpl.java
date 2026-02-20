@@ -47,6 +47,12 @@ public class SongServiceImpl implements SongService {
 
         return songRepository.save(existingSong);
     }
+    @Override
+    public List<Song> searchSong(String query){
+        return songRepository.findByTitleContainingIgnoreCaseOrArtistContainingIgnoreCaseOrAlbumContainingIgnoreCase(
+                query, query, query
+        );
+    }
 
 
 }

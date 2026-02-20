@@ -14,6 +14,7 @@ import com.sunny.musicplayer.musicplayer.repository.SongRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -73,5 +74,10 @@ public class SongController {
         return songService.updateSong(id, song);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Song>> searchSongs(@RequestParam String query) {
+        List<Song> result = songService.searchSong(query);
+        return ResponseEntity.ok(result);
+    }
 
 }
