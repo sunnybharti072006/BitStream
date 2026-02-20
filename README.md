@@ -1,22 +1,19 @@
-BitStream Backend
-
-BitStream is a high-performance backend for a music streaming application. It provides REST APIs to manage songs, playlists, user authentication, and streaming functionality.
-
-Features
-1.User authentication and authorization (JWT-based)
-2.CRUD operations for songs, albums, and playlists
-3.Audio streaming endpoints
-4.Search and filter songs by metadata
-5.Playlist management (create, update, delete, add/remove songs)
-6.Secure and scalable design
-
-Tech Stack
-Backend: Java 21+, Spring Boot 3.xx
-Database: PostgreSQL/mysql
-Authentication: JWT
+🎵 BitStream Backend
+BitStream is a high-performance RESTful API designed for modern music streaming applications. Built with a focus on scalability and security, it handles everything from user authentication to high-speed audio delivery.
+🚀 Features
+Secure Auth: JWT-based user authentication and role-based authorization.
+Media Management: Full CRUD operations for songs, albums, and playlists.
+Streaming Engine: Dedicated endpoints for low-latency audio streaming.
+Smart Search: Filter and find tracks by metadata (artist, genre, title).
+Playlist Control: Create, update, and manage personalized collections.
+Relational Storage: Robust data persistence using PostgreSQL or MySQL.
+🛠 Tech Stack
+Language: Java 21+
+Framework: Spring Boot 3.x
+Database: PostgreSQL / MySQL
+Security: Spring Security + JSON Web Tokens (JWT)
 Build Tool: Maven
-Version Control: Git / GitHub
-
+Version Control: Git
 
 API Endpoints:
 Endpoint        Method    Description
