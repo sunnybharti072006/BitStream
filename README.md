@@ -1,65 +1,110 @@
-🎵 BitStream Backend
-BitStream is a high-performance RESTful API designed for modern music streaming applications. Built with a focus on scalability and security, it handles everything from user authentication to high-speed audio delivery.
-🚀 Features
-Secure Auth: JWT-based user authentication and role-based authorization.
-Media Management: Full CRUD operations for songs, albums, and playlists.
-Streaming Engine: Dedicated endpoints for low-latency audio streaming.
-Smart Search: Filter and find tracks by metadata (artist, genre, title).
-Playlist Control: Create, update, and manage personalized collections.
-Relational Storage: Robust data persistence using PostgreSQL or MySQL.
-🛠 Tech Stack
-Language: Java 21+
+🎵 BitStream – Music Streaming Backend
+
+BitStream is a high-performance music streaming API built with Java 21 and Spring Boot 3. It offers a robust Role-Based Access Control (RBAC) system, enabling secure management of permissions for music creators, listeners, and platform administrators.
+
+🔐 Role-Based Access Control (RBAC)
+
+The platform enforces three distinct roles to ensure security and content integrity:
+
+Role	Permissions & Access
+
+👑 Admin	Platform management, deleting any track, and user oversight.
+
+🎤 Singer	Content creation, song uploads, and managing their own music profile.
+
+👤 User	Personal music discovery, streaming, and managing "Liked" playlists.
+
+🚀 API Documentation
+
+Base Path
+
+All song-related endpoints use the base path: /songs
+
+Song Management
+
+1.Method	Endpoint	Allowed Role	Description
+
+POST	/upload	Singer	Upload raw audio files to the server.
+
+POST	/add	Singer/Admin	Create a new song metadata entry.
+
+PUT	/{id}	Singer/Admin	Update existing song details (Title, Genre, etc.).
+
+DELETE	/{id}	Admin	Permanently remove a track from the library.
+
+2.Discovery & Retrieval
+
+Method	Endpoint	Allowed Role	Description
+
+GET	/getallSong	All	Fetch the complete catalog of music.
+
+GET	/search	All	Search for tracks via title, artist, or genre.
+
+GET	/singer/{id}	All	List all tracks belonging to a specific Singer.
+
+GET	/user/{userId}/liked	User	Retrieve a specific user's library of liked songs.
+
+Streaming & Interactions
+
+Method	Endpoint	Allowed Role	Description
+
+GET	/play/{id}	User	Stream or fetch the audio stream for a track.
+
+POST	/{id}/play	User	Increment play count and log playback activity.
+
+POST	/{songId}/like	User	Add a track to the "Liked Songs" collection.
+
+DELETE	/{songId}/like	User	Remove a track from the "Liked Songs" collection.
+
+🛠️ Tech Stack & Requirements
+
+Runtime: Java 21 (LTS)
+
 Framework: Spring Boot 3.x
-Database: PostgreSQL / MySQL
-Security: Spring Security + JSON Web Tokens (JWT)
+
+Security: Spring Security (JWT-based Authentication)
+
+Database: PostgreSQL / MySQL (Configurable via application.properties)
+
 Build Tool: Maven
-Version Control: Git
 
-API Endpoints:
-Endpoint        Method    Description
-/users/register POST      Register a new user
+🔧 Getting Started
 
-/users/login    POST   Login and get JWT token
+Clone the Repository
 
-/songs          GET       Get all songs
+git clone https://github.com/sunnybharti072006/BitStream.git
 
-/songs/{id}     GET       Get song by ID
+cd musicplayer
 
-/songs/play/{id} GET      Stream a song by ID
+Clean and Build
 
-/playlists      POST     Create a new playlist
+./mvnw clean install
 
-/playlists/{id} PUT       Update playlist
+Run Locally
 
-/playlists/{id} DELETE    Delete playlist
+./mvnw spring-boot:run
 
-/search         GET      Search songs
+📝 Notes
 
+Ensure your database configuration in application.properties matches your local setup.
 
-1:Installation
-Clone the repository:
+JWT authentication is required for protected endpoints.
 
-git clone https://github.com/yourusername/BitStream.git
-cd BitStream
+Role-based restrictions are enforced on all critical operations.
 
-2:Set up the database
-Create a PostgreSQL database and update application.properties:
+🤝 Contributing
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/bitstream
-spring.datasource.username=yourusername
-spring.datasource.password=yourpassword
+Fork the repository.
 
-3:Run the application
-mvn clean install
-mvn spring-boot:run
+Create a feature branch: git checkout -b feature/my-feature
 
-The backend will start at http://localhost:8090.
+Commit your changes: git commit -m "Add my feature"
 
-Contributing:
-We welcome contributions! Please follow these steps:
-Fork the repo
-Create a new branch (git checkout -b feature/YourFeature)
-Commit your changes (git commit -m 'Add feature')
-Push to the branch (git push origin feature/YourFeature)
-Open a Pull Request
+Push to the branch: git push origin feature/my-feature
 
+Open a Pull Request.
+
+📄 License
+
+This project is licensed under the MIT License – see the LICENSE
+ file for details.
