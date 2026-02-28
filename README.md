@@ -1,6 +1,8 @@
-🎵 BitStream – Music Streaming Backend
+BitStream – Music Streaming Backend
 
-BitStream is a high-performance music streaming API built with Java 21 and Spring Boot 3. It offers a robust Role-Based Access Control (RBAC) system, enabling secure management of permissions for music creators, listeners, and platform administrators.
+BitStream is a modern, high-performance music streaming backend designed for developers and platforms that want to manage, deliver, and stream music efficiently. Built on Java 21 and Spring Boot 3, it leverages the latest features of the Java ecosystem to provide fast, reliable, and scalable streaming services.
+
+At its core, BitStream focuses on secure, role-based access control (RBAC), ensuring that each type of user—whether a singer, listener, or platform administrator—has precisely the permissions they need and nothing more. This design ensures both security and content integrity, making it ideal for professional music platforms.
 
 🔐 Role-Based Access Control (RBAC)
 
