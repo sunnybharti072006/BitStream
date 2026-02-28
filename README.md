@@ -22,7 +22,7 @@ Base Path
 
 All song-related endpoints use the base path: /songs
 
-Song Management
+#Song Management
 
 1.Method	Endpoint	Allowed Role	Description
 
@@ -46,7 +46,7 @@ GET	/singer/{id}	All	List all tracks belonging to a specific Singer.
 
 GET	/user/{userId}/liked	User	Retrieve a specific user's library of liked songs.
 
-Streaming & Interactions
+3.Streaming & Interactions
 
 Method	Endpoint	Allowed Role	Description
 
