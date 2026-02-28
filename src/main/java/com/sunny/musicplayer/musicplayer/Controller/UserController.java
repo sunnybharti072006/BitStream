@@ -26,7 +26,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        // Check agar email pehle se exist karti hai
         if (userRepo.findByEmail(user.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already registered!");
         }
@@ -37,7 +36,6 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody User loginUser) {
         User user = userRepo.findByEmail(loginUser.getEmail());
 
-        // Check user existence and password
         if (user == null || !user.getPassword().equals(loginUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Email or Password ");
         }
@@ -58,7 +56,7 @@ public class UserController {
 
             user.getLikedSongs().add(song);
             userRepo.save(user);
-            return ResponseEntity.ok("Song Liked ❤️");
+            return ResponseEntity.ok("Song Liked ❤");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -72,7 +70,7 @@ public class UserController {
 
             user.getLikedSongs().remove(song);
             userRepo.save(user);
-            return ResponseEntity.ok("Song Unliked 💔");
+            return ResponseEntity.ok("Song Unliked");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

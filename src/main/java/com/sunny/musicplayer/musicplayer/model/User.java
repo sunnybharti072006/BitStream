@@ -1,6 +1,7 @@
 package com.sunny.musicplayer.musicplayer.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sunny.musicplayer.musicplayer.model.Song;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,11 +23,15 @@ public class User {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Column(unique = true)
     private String email;
 
     private String password;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_liked_songs",
@@ -34,4 +39,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
     private Set<Song> likedSongs = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "singer", cascade = CascadeType.ALL)
+    private Set<Song> uploadedSongs = new HashSet<>();
 }
