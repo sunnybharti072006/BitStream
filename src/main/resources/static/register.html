@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitStream Music - Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .brand-section {
+            flex: 1;
+            min-width: 300px;
+            color: white;
+            animation: fadeInLeft 1s ease;
+        }
+
+        .brand-section h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .brand-section .highlight {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            list-style: none;
+        }
+
+        .features li {
+            margin: 15px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features li span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .register-section {
+            flex: 1;
+            min-width: 350px;
+            max-width: 450px;
+            animation: fadeInRight 1s ease;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-header h2 {
+            font-size: 2.2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .register-header p {
+            color: #666;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.1);
+        }
+
+        .input-group input.error {
+            border-color: #f43b47;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+        }
+
+        .strength-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .terms-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .terms-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .terms-group label {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .terms-group a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #f43b47;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="brand-section">
+        <h1>
+            🎵 <span class="highlight">BitStream</span><br>
+            Music Streaming
+        </h1>
+        <p>Join the community and start your musical journey today!</p>
+
+        <ul class="features">
+            <li>
+                <span>🎧</span>
+                High-quality audio streaming
+            </li>
+            <li>
+                <span>📱</span>
+                Listen on any device
+            </li>
+            <li>
+                <span>💬</span>
+                Comment and connect with fans
+            </li>
+            <li>
+                <span>❤️</span>
+                Like and save your favorites
+            </li>
+        </ul>
+    </div>
+
+    <div class="register-section">
+        <div class="register-card">
+            <div class="register-header">
+                <h2>Join BitStream! 🎵</h2>
+                <p>Create your account and start streaming</p>
+            </div>
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="registerName" placeholder="Enter your full name">
+                <div class="error-message" id="registerNameError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="registerEmail" placeholder="Enter your email">
+                <div class="error-message" id="registerEmailError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="registerPassword" placeholder="Create a password" onkeyup="checkPasswordStrength()">
+                <div class="password-strength">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+                <div class="strength-text" id="strengthText"></div>
+                <div class="error-message" id="registerPasswordError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input type="password" id="registerConfirmPassword" placeholder="Confirm your password">
+                <div class="error-message" id="registerConfirmError"></div>
+            </div>
+
+            <div class="terms-group">
+                <input type="checkbox" id="terms" checked>
+                <label for="terms">I agree to the <a href="#" onclick="showToast('Terms of Service', 'info'); return false;">Terms of Service</a> and <a href="#" onclick="showToast('Privacy Policy', 'info'); return false;">Privacy Policy</a></label>
+            </div>
+
+            <button class="register-btn" onclick="register()" id="registerBtn">
+                <span class="btn-text">Create Account</span>
+            </button>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:8090";
+
+    function register() {
+        clearErrors();
+
+        const name = document.getElementById("registerName").value.trim();
+        const email = document.getElementById("registerEmail").value.trim();
+        const password = document.getElementById("registerPassword").value.trim();
+        const confirmPassword = document.getElementById("registerConfirmPassword").value.trim();
+        const btn = document.getElementById('registerBtn');
+        const btnText = btn.querySelector('.btn-text');
+
+        if (!name || !email || !password || !confirmPassword) {
+            showToast("All fields required", "error");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showToast("Passwords do not match", "error");
+            return;
+        }
+
+        btnText.textContent = "Creating account...";
+        btn.disabled = true;
+
+        fetch("http://localhost:8090/users/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                password: password
+            })
+        })
+            .then(async res => {
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(errorText || "Registration failed");
+                }
+                return res.json();
+            })
+            .then(data => {
+                showToast("Account Created Successfully 🎉", "success");
+
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 1000);
+            })
+            .catch(err => {
+                showToast(err.message, "error");
+            })
+            .finally(() => {
+                btnText.textContent = "Create Account";
+                btn.disabled = false;
+            });
+    }
+
+    function checkPasswordStrength() {
+        const password = document.getElementById("registerPassword").value;
+        const strengthBar = document.getElementById("strengthBar");
+        const strengthText = document.getElementById("strengthText");
+
+        let strength = 0;
+        let message = "";
+
+        if (password.length >= 8) strength += 25;
+        if (password.match(/[a-z]+/)) strength += 25;
+        if (password.match(/[A-Z]+/)) strength += 25;
+        if (password.match(/[0-9]+/)) strength += 25;
+        if (password.match(/[^a-zA-Z0-9]+/)) strength += 25;
+
+        strength = Math.min(strength, 100);
+
+        strengthBar.style.width = strength + "%";
+
+        if (strength <= 25) {
+            strengthBar.style.background = "#f43b47";
+            message = "Weak password";
+        } else if (strength <= 50) {
+            strengthBar.style.background = "#f09819";
+            message = "Fair password";
+        } else if (strength <= 75) {
+            strengthBar.style.background = "#fbbf24";
+            message = "Good password";
+        } else {
+            strengthBar.style.background = "#00b09b";
+            message = "Strong password";
+        }
+
+        strengthText.textContent = message;
+    }
+
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function showFieldError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+    }
+
+    function clearErrors() {
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.textContent = '';
+            el.classList.remove('show');
+        });
+    }
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+
+        if (type === 'success') {
+            toast.style.background = 'linear-gradient(45deg, #00b09b, #96c93d)';
+        } else if (type === 'error') {
+            toast.style.background = 'linear-gradient(45deg, #f43b47, #f09819)';
+        } else {
+            toast.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+        }
+
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    window.onload = function() {
+        const userId = localStorage.getItem('currentUserId');
+        if (userId) {
+            window.location.href = "index.html";
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                register();
+            }
+        });
+    };
+</script>
+</body>
+</html>

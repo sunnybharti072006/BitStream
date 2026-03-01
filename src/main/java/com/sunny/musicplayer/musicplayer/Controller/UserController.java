@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.*;
+
+@CrossOrigin(origins = "*")
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -27,7 +32,8 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         if (userRepo.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already registered!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Email already registered!");
         }
         return ResponseEntity.ok(userRepo.save(user));
     }
@@ -37,7 +43,8 @@ public class UserController {
         User user = userRepo.findByEmail(loginUser.getEmail());
 
         if (user == null || !user.getPassword().equals(loginUser.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Email or Password ");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid Email or Password");
         }
 
         Map<String, Object> response = new HashMap<>();
@@ -46,40 +53,5 @@ public class UserController {
         response.put("email", user.getEmail());
 
         return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/{userId}/like/{songId}")
-    public ResponseEntity<?> likeSong(@PathVariable Long userId, @PathVariable Long songId) {
-        try {
-            User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-            Song song = songRepo.findById(songId).orElseThrow(() -> new RuntimeException("Song not found"));
-
-            user.getLikedSongs().add(song);
-            userRepo.save(user);
-            return ResponseEntity.ok("Song Liked ❤");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/{userId}/unlike/{songId}")
-    public ResponseEntity<?> unlikeSong(@PathVariable Long userId, @PathVariable Long songId) {
-        try {
-            User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-            Song song = songRepo.findById(songId).orElseThrow(() -> new RuntimeException("Song not found"));
-
-            user.getLikedSongs().remove(song);
-            userRepo.save(user);
-            return ResponseEntity.ok("Song Unliked");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/{userId}/liked")
-    public ResponseEntity<?> getLikedSongs(@PathVariable Long userId) {
-        return userRepo.findById(userId)
-                .map(user -> ResponseEntity.ok(user.getLikedSongs()))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }

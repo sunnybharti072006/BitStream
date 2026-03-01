@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitStream Music - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .user-welcome {
+            color: white;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .upload-form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input {
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .upload-btn {
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-width: 150px;
+        }
+
+        .upload-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 176, 155, 0.3);
+        }
+
+        .upload-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .songs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .songs-header h2 {
+            font-size: 2rem;
+        }
+
+        .song-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .song-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .song-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+        }
+
+        .song-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+            color: white;
+        }
+
+        .song-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .song-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .song-content {
+            padding: 20px;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        audio {
+            width: 100%;
+            border-radius: 30px;
+        }
+
+        .like-btn {
+            background: linear-gradient(45deg, #f43b47, #f09819);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .like-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(244, 59, 71, 0.4);
+        }
+
+        .like-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .like-btn.liked {
+            background: linear-gradient(45deg, #f43b47, #f09819);
+            box-shadow: 0 0 20px rgba(244, 59, 71, 0.5);
+        }
+
+        .comments-section {
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+        }
+
+        .comments-section h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .comment-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comment-input-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+
+        .comment-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .comment-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .comment-btn:hover:not(:disabled) {
+            background: #5a67d8;
+        }
+
+        .comment-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .comment-thread {
+            margin-top: 15px;
+        }
+
+        .comment {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment.reply {
+            margin-left: 30px;
+            background: #f1f3f5;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .comment-likes {
+            color: #f43b47;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .comment-content {
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .comment-like-btn {
+            background: none;
+            border: 2px solid #f43b47;
+            color: #f43b47;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-like-btn:hover:not(:disabled) {
+            background: #f43b47;
+            color: white;
+        }
+
+        .comment-like-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .reply-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .reply-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .reply-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .reply-btn:hover:not(:disabled) {
+            background: #3ca36b;
+        }
+
+        .reply-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #ffffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .genre-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .delete-comment {
+            color: #999;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .delete-comment:hover {
+            color: #f43b47;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-info {
+                justify-content: center;
+            }
+
+            .upload-form {
+                flex-direction: column;
+            }
+
+            .songs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comment.reply {
+                margin-left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <h1>🎵 BitStream Music</h1>
+        </div>
+
+        <div class="user-info" id="userInfo"></div>
+    </div>
+
+    <div class="upload-section" id="uploadSection">
+        <h2>🎤 Upload Your Music</h2>
+        <div class="upload-form">
+            <div class="form-group">
+                <label>Song Title</label>
+                <input type="text" id="title" placeholder="e.g., Summer Vibes">
+            </div>
+            <div class="form-group">
+                <label>Genre</label>
+                <input type="text" id="genre" placeholder="e.g., Pop, Rock, Jazz">
+            </div>
+            <div class="form-group">
+                <label>Audio File</label>
+                <input type="file" id="file" accept="audio/*" class="file-input">
+            </div>
+            <button class="upload-btn" onclick="uploadSong()">📤 Upload Song</button>
+        </div>
+    </div>
+
+    <div class="songs-header">
+        <h2>🎧 Discover Music</h2>
+        <span class="song-count" id="songCount">0 songs</span>
+    </div>
+
+    <div id="songs" class="songs-grid"></div>
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:8090";
+    let currentUserId = null;
+    let currentUserName = null;
+
+    window.onload = function() {
+        const storedUserId = localStorage.getItem('currentUserId');
+        const storedUserName = localStorage.getItem('currentUserName');
+
+        if (storedUserId && storedUserName) {
+            currentUserId = storedUserId;
+            currentUserName = storedUserName;
+            updateUserInfo();
+            loadSongs();
+        } else {
+            window.location.href = "login.html";
+        }
+    };
+
+    function updateUserInfo() {
+        const userInfo = document.getElementById('userInfo');
+        if (currentUserId && currentUserName) {
+            const initial = currentUserName.charAt(0).toUpperCase();
+            userInfo.innerHTML = `
+                <div class="user-avatar">${initial}</div>
+                <span class="user-welcome">Welcome, ${escapeHtml(currentUserName)}!</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            `;
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('currentUserId');
+        localStorage.removeItem('currentUserName');
+        showNotification('Logged out successfully! 👋', 'success');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+    }
+
+    function uploadSong() {
+        if (!currentUserId) {
+            showNotification("Please login first", "error");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const fileInput = document.getElementById("file");
+        const title = document.getElementById("title").value;
+        const genre = document.getElementById("genre").value;
+
+        if (!fileInput.files.length) {
+            showNotification("Please select an audio file", "error");
+            return;
+        }
+
+        if (!title) {
+            showNotification("Please enter a song title", "error");
+            return;
+        }
+
+        const uploadBtn = document.querySelector('.upload-btn');
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = 'Uploading...';
+
+        const formData = new FormData();
+        formData.append("userId", currentUserId);
+        formData.append("title", title);
+        formData.append("genre", genre);
+        formData.append("file", fileInput.files[0]);
+
+        fetch(BASE_URL + "/songs/upload", {
+            method: "POST",
+            body: formData
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Upload failed");
+                return res.json();
+            })
+            .then(() => {
+                showNotification("Song uploaded successfully! 🎵", "success");
+
+                document.getElementById("title").value = "";
+                document.getElementById("genre").value = "";
+                document.getElementById("file").value = "";
+
+                loadSongs();
+            })
+            .catch(err => {
+                showNotification(err.message, "error");
+            })
+            .finally(() => {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📤 Upload Song';
+            });
+    }
+
+    function loadSongs() {
+        const songsDiv = document.getElementById("songs");
+        songsDiv.innerHTML = '<div class="loading">Loading amazing music...</div>';
+
+        fetch(BASE_URL + "/songs")
+            .then(res => res.json())
+            .then(data => {
+                updateSongCount(data.length);
+
+                if (data.length === 0) {
+                    songsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <p>🎵 No songs yet. Be the first to upload!</p>
+                    </div>
+                `;
+                    return;
+                }
+
+                let html = "";
+
+                data.forEach(song => {
+                    html += `
+                    <div class="song-card">
+                        <div class="song-header">
+                            <h3>${escapeHtml(song.title)}</h3>
+                            ${song.genre ? `<span class="genre-tag">${escapeHtml(song.genre)}</span>` : ''}
+                            <p>Uploaded by: ${escapeHtml(song.singer?.name || 'Unknown')}</p>
+                        </div>
+
+                        <div class="song-content">
+                            <div class="audio-player">
+                                <audio controls src="${BASE_URL}/songs/play/${song.id}"></audio>
+                            </div>
+
+                            <button class="like-btn" onclick="toggleLike(${song.id}, this)" ${!currentUserId ? 'disabled' : ''}>
+                                ❤️ Like
+                            </button>
+
+                            <div class="comments-section">
+                                <h4>💬 Comments</h4>
+
+                                <div class="comment-input-group">
+                                    <input type="text" id="comment-${song.id}" placeholder="Write a comment..." ${!currentUserId ? 'disabled' : ''}>
+                                    <button class="comment-btn" onclick="addComment(${song.id})" ${!currentUserId ? 'disabled' : ''}>Post</button>
+                                </div>
+
+                                <div id="comments-${song.id}" class="comment-thread"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                });
+
+                songsDiv.innerHTML = html;
+
+                data.forEach(song => {
+                    loadComments(song.id);
+                    checkIfLiked(song.id);
+                });
+            })
+            .catch(err => {
+                songsDiv.innerHTML = `
+                <div class="empty-state">
+                    <p>❌ Error loading songs. Please try again.</p>
+                </div>
+            `;
+                console.error(err);
+            });
+    }
+
+    function checkIfLiked(songId) {
+        if (!currentUserId) return;
+
+        fetch(`${BASE_URL}/user/${currentUserId}/liked`)
+            .then(res => res.json())
+            .then(likedSongs => {
+                const isLiked = likedSongs.some(song => song.id === songId);
+                const likeBtn = document.querySelector(`button[onclick="toggleLike(${songId}, this)"]`);
+                if (likeBtn && isLiked) {
+                    likeBtn.classList.add('liked');
+                    likeBtn.innerHTML = '❤️ Liked';
+                }
+            })
+            .catch(err => console.error("Error checking liked status:", err));
+    }
+
+    function toggleLike(songId, btn) {
+        if (!currentUserId) {
+            showNotification("Please login to like songs", "error");
+            window.location.href = "login.html";
+            return;
+        }
+
+        fetch(`${BASE_URL}/songs/${songId}/like?userId=${currentUserId}`, {
+            method: "POST"
+        })
+            .then(res => res.json())
+            .then(liked => {
+                if (liked) {
+                    btn.classList.add('liked');
+                    btn.innerHTML = '❤️ Liked';
+                    showNotification("Song liked! ❤️", "success");
+                } else {
+                    btn.classList.remove('liked');
+                    btn.innerHTML = '❤️ Like';
+                    showNotification("Song unliked 💔", "success");
+                }
+            })
+            .catch(err => {
+                showNotification("Error toggling like", "error");
+            });
+    }
+
+    function addComment(songId, parentId = null) {
+        if (!currentUserId) {
+            showNotification("Please login to comment", "error");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const inputId = parentId ? `reply-${parentId}` : `comment-${songId}`;
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        const content = input.value.trim();
+        if (!content) {
+            showNotification("Please write something", "error");
+            return;
+        }
+
+        const btn = input.nextElementSibling; // safer than querySelector
+        if (btn) btn.disabled = true;
+
+        const commentData = {
+            userId: parseInt(currentUserId),
+            content: content,
+            parentId: parentId ? parseInt(parentId) : null
+        };
+
+        fetch(`${BASE_URL}/songs/${songId}/comments`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(commentData)
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to post comment");
+                return res.json();
+            })
+            .then(() => {
+                input.value = "";
+                showNotification("Comment posted! 💬", "success");
+                loadComments(songId);
+            })
+            .catch(() => {
+                showNotification("Error posting comment", "error");
+            })
+            .finally(() => {
+                if (btn) btn.disabled = false;
+            });
+    }
+    function loadComments(songId) {
+        fetch(`${BASE_URL}/${songId}/comments`)
+            .then(res => res.json())
+            .then(comments => {
+                const commentsDiv = document.getElementById(`comments-${songId}`);
+                if (!commentsDiv) return;
+
+                let html = "";
+
+                comments.forEach(c => {
+                    html += `
+            <div class="comment">
+                <div class="comment-header">
+                    <span class="comment-author">${escapeHtml(c.user.name)}</span>
+                    <span class="comment-likes">❤️ ${c.likeCount || 0}</span>
+                    ${parseInt(currentUserId) === c.user.id ? `<span class="delete-comment" onclick="deleteComment(${songId}, ${c.id})">🗑️</span>` : ''}
+                </div>
+                <div class="comment-content">${escapeHtml(c.content)}</div>
+                <div class="comment-actions">
+                    <button class="comment-like-btn" onclick="likeComment(${songId}, ${c.id})">Like</button>
+                </div>
+                <div class="reply-input-group">
+                    <input type="text" id="reply-${c.id}" placeholder="Write a reply...">
+                    <button class="reply-btn" onclick="addComment(${songId}, ${c.id})">Reply</button>
+                </div>
+            </div>`;
+
+                    if (c.replies && c.replies.length > 0) {
+                        c.replies.forEach(r => {
+                            html += `
+                    <div class="comment reply">
+                        <div class="comment-header">
+                            <span class="comment-author">${escapeHtml(r.user.name)}</span>
+                            <span class="comment-likes">❤️ ${r.likeCount || 0}</span>
+                            ${parseInt(currentUserId) === r.user.id ? `<span class="delete-comment" onclick="deleteComment(${songId}, ${r.id})">🗑️</span>` : ''}
+                        </div>
+                        <div class="comment-content">${escapeHtml(r.content)}</div>
+                        <div class="comment-actions">
+                            <button class="comment-like-btn" onclick="likeComment(${songId}, ${r.id})">Like</button>
+                        </div>
+                    </div>`;
+                        });
+                    }
+                });
+
+                commentsDiv.innerHTML = html || '<p style="color:#999;text-align:center;">No comments yet. Be the first to comment!</p>';
+            })
+            .catch(err => console.error("Error loading comments:", err));
+    }
+
+    function likeComment(songId, commentId) {
+        if (!currentUserId) {
+            showNotification("Please login to like comments", "error");
+            window.location.href = "login.html";
+            return;
+        }
+
+        fetch(`${BASE_URL}/comments/${commentId}/like?userId=${currentUserId}`, { method: "POST" })
+            .then(res => res.json())
+            .then(liked => {
+                showNotification(liked ? "Comment liked! ❤️" : "Comment unliked 💔", "success");
+                loadComments(songId);
+            })
+            .catch(() => showNotification("Error liking comment", "error"));
+    }
+
+    function deleteComment(songId, commentId) {
+        if (!currentUserId) return;
+        if (!confirm("Delete this comment?")) return;
+
+        fetch(`${BASE_URL}/comments/${commentId}?userId=${currentUserId}`, { method: "DELETE" })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to delete comment");
+                showNotification("Comment deleted", "success");
+                loadComments(songId);
+            })
+            .catch(() => showNotification("Error deleting comment", "error"));
+    }
+
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function updateSongCount(count) {
+        const countElement = document.getElementById('songCount');
+        if (countElement) {
+            countElement.textContent = `${count} ${count === 1 ? 'song' : 'songs'}`;
+        }
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+
+        if (type === 'success') {
+            notification.style.background = 'linear-gradient(45deg, #00b09b, #96c93d)';
+        } else if (type === 'error') {
+            notification.style.background = 'linear-gradient(45deg, #f43b47, #f09819)';
+        } else {
+            notification.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+        }
+
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideIn 0.3s ease reverse';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Session check
+    setInterval(() => {
+        const storedUserId = localStorage.getItem('currentUserId');
+        if (!storedUserId && currentUserId) {
+            showNotification('Session expired. Please login again.', 'error');
+            window.location.href = 'login.html';
+        }
+    }, 5000);
+</script>
+</body>
+</html>
