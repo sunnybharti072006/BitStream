@@ -52,4 +52,12 @@ public class Comment {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> likedByUsers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "comment_likes",
+            joinColumns = @JoinColumn(name = "comment_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likedUsers = new HashSet<>();
 }

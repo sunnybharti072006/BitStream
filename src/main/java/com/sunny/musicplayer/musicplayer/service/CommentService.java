@@ -10,81 +10,68 @@ import com.sunny.musicplayer.musicplayer.repository.SongRepository;
 import com.sunny.musicplayer.musicplayer.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
 
+import java.util.List;
+import java.util.stream.Collectors;
 @Service
+@Transactional
 public class CommentService {
-
     private final CommentRepository commentRepository;
-    private final SongRepository songRepository;
     private final UserRepository userRepository;
+    private final SongRepository songRepository;
 
     public CommentService(CommentRepository commentRepository,
-                          SongRepository songRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          SongRepository songRepository) {
         this.commentRepository = commentRepository;
-        this.songRepository = songRepository;
         this.userRepository = userRepository;
+        this.songRepository = songRepository;
     }
 
     public Comment addComment(Long userId, Long songId, String content, Long parentId) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new RuntimeException("Song not found"));
 
         Comment comment = new Comment();
-        comment.setContent(content);
         comment.setUser(user);
         comment.setSong(song);
+        comment.setContent(content);
 
         if (parentId != null) {
             Comment parent = commentRepository.findById(parentId)
                     .orElseThrow(() -> new RuntimeException("Parent comment not found"));
-
-            if (!parent.getSong().getId().equals(songId)) {
-                throw new RuntimeException("Reply must belong to same song");
-            }
-
             comment.setParent(parent);
         }
 
         return commentRepository.save(comment);
     }
 
-    public List<CommentResponseDto> getCommentsBySong(Long songId) {
+    public boolean toggleLike(Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<Comment> comments =
-                commentRepository.findBySongIdAndParentIsNullOrderByCreatedAtDesc(songId);
-
-        return comments.stream()
-                .map(this::mapToDto)
-                .toList();
+        if (comment.getLikedUsers().contains(user)) {
+            comment.getLikedUsers().remove(user);
+            commentRepository.save(comment);
+            return false; // unliked
+        } else {
+            comment.getLikedUsers().add(user);
+            commentRepository.save(comment);
+            return true; // liked
+        }
     }
 
-    private CommentResponseDto mapToDto(Comment comment) {
-
-        UserDto userDto = new UserDto(
-                comment.getUser().getId(),
-                comment.getUser().getName()
-        );
-
-        List<CommentResponseDto> replyDtos = comment.getReplies()
-                .stream()
-                .map(this::mapToDto)
-                .toList();
-
-        return new CommentResponseDto(
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                userDto,
-                replyDtos,
-                comment.getLikedByUsers().size()
-        );
+    public List<CommentResponseDto> getCommentsBySong(Long songId) {
+        List<Comment> comments = commentRepository.findBySongIdWithLikes(songId);
+        return comments.stream()
+                .map(CommentResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public void deleteComment(Long commentId, Long userId) {
@@ -92,29 +79,15 @@ public class CommentService {
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new RuntimeException("User not authorized to delete this comment");
+            throw new RuntimeException("Not allowed to delete this comment");
         }
 
         commentRepository.delete(comment);
     }
-
-    @Transactional
-    public boolean toggleLike(Long commentId, Long userId) {
+    public int getLikeCount(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (comment.getLikedByUsers().contains(user)) {
-            comment.getLikedByUsers().remove(user);
-            return false; // unliked
-        } else {
-            comment.getLikedByUsers().add(user);
-            return true; // liked
-        }
-
-
+        return comment.getLikedUsers() != null ? comment.getLikedUsers().size() : 0;
     }
-
 }

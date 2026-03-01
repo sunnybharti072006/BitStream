@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/songs")
@@ -55,11 +57,16 @@ public class CommentController {
     }
 
     @PostMapping("/comments/{commentId}/like")
-    public ResponseEntity<Boolean> toggleLike(
+    public ResponseEntity<Map<String,Object>> toggleLike(
             @PathVariable Long commentId,
             @RequestParam Long userId) {
 
         boolean liked = commentService.toggleLike(commentId, userId);
-        return ResponseEntity.ok(liked);
+        int likeCount = commentService.getLikeCount(commentId);
+
+        Map<String,Object> res = new HashMap<>();
+        res.put("liked", liked);
+        res.put("likeCount", likeCount);
+        return ResponseEntity.ok(res);
     }
 }
