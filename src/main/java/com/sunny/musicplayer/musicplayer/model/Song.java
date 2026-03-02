@@ -34,6 +34,10 @@ public class Song {
     @Column(name = "file_path")
     private String filePath;
 
+    @Lob
+    private String lyrics;
+
+
     private String genre;
 
     @Column(nullable = false)

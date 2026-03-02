@@ -7,6 +7,7 @@ import com.sunny.musicplayer.musicplayer.repository.SongRepository;
 import com.sunny.musicplayer.musicplayer.repository.UserRepository;
 import com.sunny.musicplayer.musicplayer.service.SongService;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Service
 public class SongServiceImpl implements SongService {
 
+    @Autowired
     private final SongRepository songRepository;
     private final UserRepository userRepository;
 
@@ -182,5 +184,20 @@ public class SongServiceImpl implements SongService {
 
         return songRepository.save(song);
     }
+    @Override
+    public Song addLyrics(Long songId, String lyrics) {
+        Song song = songRepository.findById(songId)
+                .orElseThrow(() -> new RuntimeException("Song not found"));
+        song.setLyrics(lyrics);
+        return songRepository.save(song);
+    }
+
+    @Override
+    public String getLyrics(Long songId) {
+        Song song = songRepository.findById(songId)
+                .orElseThrow(() -> new RuntimeException("Song not found"));
+        return song.getLyrics();
+    }
+
 
 }

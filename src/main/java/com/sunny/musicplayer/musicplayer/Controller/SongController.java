@@ -2,6 +2,7 @@ package com.sunny.musicplayer.musicplayer.Controller;
 
 import com.sunny.musicplayer.musicplayer.model.Song;
 import com.sunny.musicplayer.musicplayer.service.SongService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -28,6 +29,8 @@ public class SongController {
     @Value("${music.folder.path}")
     private String basePath;
 
+    @Autowired
+    private SongService songServiceimpl;
     public SongController(SongService songService) {
         this.songService = songService;
     }
@@ -138,4 +141,15 @@ public class SongController {
         songService.incrementPlayCount(id);
         return ResponseEntity.ok("Play count updated");
     }
+    @PostMapping("/{id}/lyrics")
+    public ResponseEntity<Song> addLyrics(@PathVariable Long id, @RequestBody String lyrics) {
+        Song updatedSong = songService.addLyrics(id, lyrics);
+        return ResponseEntity.ok(updatedSong);
+    }
+    @GetMapping("/{id}/lyrics")
+    public ResponseEntity<String> getLyrics(@PathVariable Long id) {
+        String lyrics = songService.getLyrics(id);
+        return ResponseEntity.ok(lyrics);
+    }
+
 }

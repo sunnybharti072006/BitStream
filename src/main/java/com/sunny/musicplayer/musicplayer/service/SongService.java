@@ -35,4 +35,8 @@ public interface SongService {
     ) throws IOException;
     List<Song> getSongsBySinger(Long singerId);
     Song incrementPlayCount(Long id);
+
+    Song addLyrics(Long songId, String lyrics);
+    String getLyrics(Long songId);
+
 }

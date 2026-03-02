@@ -51,7 +51,6 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
             @RequestParam Long userId) {
-
         commentService.deleteComment(commentId, userId);
         return ResponseEntity.noContent().build();
     }

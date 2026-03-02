@@ -1,109 +1,50 @@
+<!-- login.html - Spotify Style Login -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BitStream Music - Login</title>
+    <title>BitStream - Login</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #000000 0%, #121212 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
             padding: 20px;
         }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 50px;
-            flex-wrap: wrap;
-        }
-
-        .brand-section {
-            flex: 1;
-            min-width: 300px;
-            color: white;
-            animation: fadeInLeft 1s ease;
-        }
-
-        .brand-section h1 {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .brand-section .highlight {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .brand-section p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 30px;
-        }
-
-        .features {
-            list-style: none;
-        }
-
-        .features li {
-            margin: 15px 0;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .features li span {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .login-section {
-            flex: 1;
-            min-width: 350px;
-            max-width: 450px;
-            animation: fadeInRight 1s ease;
-        }
-
         .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
+            background: #1A1A1A;
+            border-radius: 8px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        .login-header {
+        .logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
-        .login-header h2 {
-            font-size: 2.2rem;
-            color: #333;
-            margin-bottom: 10px;
+        .logo svg {
+            width: 150px;
+            height: 45px;
         }
 
-        .login-header p {
-            color: #666;
+        .logo h1 {
+            display: none;
         }
 
         .input-group {
@@ -111,456 +52,133 @@
         }
 
         .input-group label {
+            color: var(--text-primary);
             display: block;
             margin-bottom: 8px;
-            color: #555;
             font-weight: 600;
             font-size: 0.9rem;
         }
 
         .input-group input {
             width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
+            padding: 14px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: white;
             font-size: 1rem;
-            transition: all 0.3s ease;
         }
 
         .input-group input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102,126,234,0.1);
-        }
-
-        .input-group input.error {
-            border-color: #f43b47;
+            border-color: #1DB954;
         }
 
         .login-btn {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
+            background: #1DB954;
+            color: black;
+            font-weight: 700;
             border: none;
-            border-radius: 15px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 500px;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
+            margin-top: 20px;
+            transition: all 0.2s ease;
         }
 
-        .login-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
-        }
-
-        .login-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .forgot-password {
-            text-align: right;
-            margin-top: 10px;
-        }
-
-        .forgot-password a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 0.9rem;
+        .login-btn:hover {
+            background: #1ed760;
+            transform: scale(1.02);
         }
 
         .register-link {
             text-align: center;
             margin-top: 20px;
-            color: #666;
+            color: #888;
         }
 
         .register-link a {
-            color: #667eea;
+            color: #1DB954;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-
-        .social-login {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .social-login p {
-            color: #666;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .social-login p::before,
-        .social-login p::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 30%;
-            height: 1px;
-            background: #e0e0e0;
-        }
-
-        .social-login p::before {
-            left: 0;
-        }
-
-        .social-login p::after {
-            right: 0;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .social-icon:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-        }
-
-        .demo-credentials {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            font-size: 0.9rem;
-        }
-
-        .demo-credentials p {
-            color: #666;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .cred-box {
-            display: flex;
-            gap: 10px;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .cred-item {
-            background: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-            text-align: center;
-            min-width: 80px;
-        }
-
-        .cred-item:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .error-message {
-            color: #f43b47;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .shake {
-            animation: shake 0.3s ease;
-        }
-
         .toast {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1DB954;
+            color: black;
+            padding: 12px 24px;
+            border-radius: 500px;
             font-weight: 600;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="brand-section">
-        <h1>
-            🎵 <span class="highlight">BitStream</span><br>
-            Music Streaming
-        </h1>
-        <p>Experience music like never before. Stream millions of songs, create playlists, and connect with artists.</p>
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo">
+            <svg viewBox="0 0 1134 340" width="150" height="45">
+                <path fill="#1DB954" d="M8 171c0 92 76 168 168 168s168-76 168-168S268 4 176 4 8 79 8 171zm230 78c-39-24-89-30-147-17-14 3-24-13-11-24 19-16 35-25 62-29 73-11 129 18 171 47 19 14 4 41-18 31-18-9-38-17-57-24zm40-57c-49-29-120-37-178-20-17 4-28-17-14-29 21-14 43-22 77-27 89-13 164 19 210 57 17 14 2 46-22 35-25-12-48-22-73-31zm4-59c-59-35-155-38-219-21-21 6-35-22-16-33 33-13 79-22 135-19 94 5 163 34 199 64 18 15 3 47-22 36-28-13-53-24-77-37z"/>
+            </svg>
+        </div>
 
-        <ul class="features">
-            <li>
-                <span>🎧</span>
-                High-quality audio streaming
-            </li>
-            <li>
-                <span>📱</span>
-                Listen on any device
-            </li>
-            <li>
-                <span>💬</span>
-                Comment and connect with fans
-            </li>
-            <li>
-                <span>❤️</span>
-                Like and save your favorites
-            </li>
-        </ul>
-    </div>
+        <div class="input-group">
+            <label>Email address</label>
+            <input type="email" id="email" value="sunny@example.com">
+        </div>
 
-    <div class="login-section">
-        <div class="login-card">
-            <div class="login-header">
-                <h2>Welcome Back! 👋</h2>
-                <p>Login to continue your musical journey</p>
-            </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" value="password">
+        </div>
 
-            <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" id="loginEmail" placeholder="Enter your email" value="sunnybhart3.142i@gmail.com">
-                <div class="error-message" id="loginEmailError"></div>
-            </div>
+        <button class="login-btn" onclick="login()">Log in</button>
 
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password" value="password">
-                <div class="error-message" id="loginPasswordError"></div>
-            </div>
-
-            <div class="forgot-password">
-                <a href="#" onclick="showToast('Password reset feature coming soon!', 'info'); return false;">Forgot Password?</a>
-            </div>
-
-            <button class="login-btn" onclick="login()" id="loginBtn">
-                <span class="btn-text">Login to BitStream</span>
-            </button>
-
-            <div class="register-link">
-                Don't have an account? <a href="register.html">Register here</a>
-            </div>
-
-            <div class="social-login">
-                <p>Or continue with</p>
-                <div class="social-icons">
-                    <div class="social-icon" onclick="showToast('Google login coming soon!', 'info')">
-                        <svg viewBox="0 0 24 24" width="25" height="25">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                        </svg>
-                    </div>
-                    <div class="social-icon" onclick="showToast('Apple login coming soon!', 'info')">
-                        <svg viewBox="0 0 24 24" width="25" height="25">
-                            <path fill="#000000" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.69 3.56-1.702"/>
-                        </svg>
-                    </div>
-                    <div class="social-icon" onclick="showToast('Facebook login coming soon!', 'info')">
-                        <svg viewBox="0 0 24 24" width="25" height="25">
-                            <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="demo-credentials">
-                <p>🎯 Demo Credentials:</p>
-                <div class="cred-box">
-                    <div class="cred-item" onclick="fillDemoLogin('sunnybhart3.142i@gmail.com', 'password')">
-                        Test User
-                    </div>
-                    <div class="cred-item" onclick="fillDemoLogin('artist@example.com', 'artist123')">
-                        Artist
-                    </div>
-                    <div class="cred-item" onclick="fillDemoLogin('admin@example.com', 'admin123')">
-                        Admin
-                    </div>
-                </div>
-            </div>
+        <div class="register-link">
+            Don't have an account? <a href="register.html">Sign up for BitStream</a>
         </div>
     </div>
 </div>
 
 <script>
-    const BASE_URL = "http://localhost:8090";
+    const BASE_URL = 'http://localhost:8090';
 
-    function login() {
-        clearErrors();
+    async function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value.trim();
-        const btn = document.getElementById('loginBtn');
-        const btnText = btn.querySelector('.btn-text');
-
-        if (!email || !password) {
-            showToast("Email and Password required", "error");
-            return;
-        }
-
-        btnText.textContent = "Logging in...";
-        btn.disabled = true;
-
-        fetch("http://localhost:8090/users/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        })
-            .then(async response => {
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || "Invalid login");
-                }
-                return response.json();
-            })
-            .then(data => {
-                localStorage.setItem("currentUserId", data.id);
-                localStorage.setItem("currentUserName", data.name);
-
-                showToast("Login Successful 🎵", "success");
-
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 1000);
-            })
-            .catch(error => {
-                showToast(error.message, "error");
-            })
-            .finally(() => {
-                btnText.textContent = "Login to BitStream";
-                btn.disabled = false;
+        try {
+            const res = await fetch(`${BASE_URL}/users/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
             });
-    }
 
-    function fillDemoLogin(email, password) {
-        document.getElementById("loginEmail").value = email;
-        document.getElementById("loginPassword").value = password;
-        showToast(`Demo credentials filled for ${email}`, "success");
-    }
-
-    function isValidEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    }
-
-    function showFieldError(elementId, message) {
-        const errorElement = document.getElementById(elementId);
-        if (errorElement) {
-            errorElement.textContent = message;
-            errorElement.classList.add('show');
+            if (res.ok) {
+                const user = await res.json();
+                localStorage.setItem('currentUserId', user.id);
+                localStorage.setItem('currentUserName', user.name);
+                window.location.href = 'index.html';
+            } else {
+                showToast('Invalid credentials');
+            }
+        } catch (error) {
+            showToast('Backend error!');
         }
     }
 
-    function clearErrors() {
-        document.querySelectorAll('.error-message').forEach(el => {
-            el.textContent = '';
-            el.classList.remove('show');
-        });
-    }
-
-    function showToast(message, type) {
+    function showToast(msg) {
         const toast = document.createElement('div');
         toast.className = 'toast';
-
-        if (type === 'success') {
-            toast.style.background = 'linear-gradient(45deg, #00b09b, #96c93d)';
-        } else if (type === 'error') {
-            toast.style.background = 'linear-gradient(45deg, #f43b47, #f09819)';
-        } else {
-            toast.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
-        }
-
-        toast.textContent = message;
+        toast.textContent = msg;
         document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
+        setTimeout(() => toast.remove(), 2000);
     }
-
-    window.onload = function() {
-        const userId = localStorage.getItem('currentUserId');
-        if (userId) {
-            window.location.href = "index.html";
-        }
-
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                login();
-            }
-        });
-    };
 </script>
 </body>
 </html>
