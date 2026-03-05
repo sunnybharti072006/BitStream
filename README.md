@@ -90,7 +90,7 @@ spring-boot-starter-data-jpa: 3.2.4
 ## 🛠️ Development Setup
 
 ### Java (Maven) Setup
-1. Install Java (JDK 11+ recommended)
+1. Install Java (JDK 21+ recommended)
 2. Install Maven
 3. Install dependencies: `mvn install`
 4. Run the project: `mvn exec:java` or check `pom.xml` for specific run commands
